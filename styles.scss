@@ -1,0 +1,120 @@
+.song-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.card {
+    position: relative;
+    width: 320px;
+    height: 180px;
+    margin: 5px 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    box-sizing: border-box;
+
+    border: black 1px solid;
+    box-shadow: #ccc 2px 2px 12px;
+    text-shadow: white 1px 1px 2px;
+    background-color: grey;
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .spans {
+        display: flex;
+        gap: 0;
+        flex-wrap: wrap;
+    }
+
+    .omote {
+        position: relative;
+        z-index: 2;
+        background-color: #ffffff80;
+        padding: 5px;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+    }
+
+    .title {
+        font-size: 1.5em;
+        font-weight: bold;
+        height: 2em;
+        overflow: hidden;
+        text-wrap: nowrap;
+    }
+
+
+    h4 {
+        margin: 0 0;
+    }
+
+    .artists {
+        height: 130px;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .my-box::-webkit-scrollbar {
+        display: none; /* Chrome/Safari 隐藏滚动条 */
+    }
+
+    .bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .vocaDB-icon {
+        height: 16px;
+    }
+
+    .icon {
+        float: right;
+
+        img {
+            display: inline-block;
+            margin-left: 4px; 
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+    .ura {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+
+
+        img {
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+        }
+    }
+    
+}
+
+@media (prefers-color-scheme: dark) {
+    .card {
+        text-shadow: black 1px 1px 2px;
+
+        .omote {
+            background-color: #000000a0;
+        }
+    }
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpine.js 渲染卡片示例</title>
+  <link rel="stylesheet" href="styles.css"></link>
+</head>
+<body>
+  <h1 x-data="{ message: '🎵 歌曲卡片示例' }" x-text="message"></h1>
+
+  <div x-data="artistData">
+
+    <div class="song-cards">
+    <template x-for="song in songs" :key="song.id">
+      <div class="card">
+        <div class="omote">
+          <div class="title" x-text="song.name"></div>
+          <div class="artists">
+            <div class="vocalists spans" x-show="song.vocalists.length > 0">
+            <template x-for="(vocalist, index) in song.vocalists" :key="index">
+              <span class="spans">
+                <span x-text="vocalist"></span>
+                <span x-show="index < song.vocalists.length - 1">、</span>
+              </span>
+            </template>
+          </div>
+          <template x-for="item in song.artists" :key="item.role">
+            <div class="spans">
+              <span x-text="item.role"></span><span>：</span>
+                <template x-for="(artist, index) in item.names" :key="index">
+                  <span class="spans">
+                    <span x-text="artist"></span>
+                    <span x-show="index < item.names.length - 1">、</span>
+                  </span>
+                </template>
+            </div>
+          </template>
+          </div>
+          <div class="bottom">
+            <div><span x-text="song.publishDate"></span></div>
+            <div>
+              <a :href="song.url" target="_blank">
+                <img src="https://static.vocadb.net/img/vocaDB-title.png" alt="VocaDB" class="vocaDB-icon" />
+              </a>
+            </div>
+            <div class="icons">
+            <template x-for="pv in song.pvs" :key="pv.url">
+              <div class="icon">
+                <a :href="pv.url" x-bind:title="pv.name" target="_blank">
+                  <img x-bind:src="pv.icon" alt="" class="platform-icon" x-show="pv.icon" />
+                </a>
+              </div>
+            </template>
+            </div>  
+          </div>
+        </div>
+        <div class="ura">
+          <img x-bind:src="song.thumb" alt="" class="thumbnail" x-show="song.thumb"  referrerpolicy="no-referrer" />
+        </div>
+      </div>
+    </template>
+    </div>
+  </div>
+
+  <script src="producer-works.js"></script>
+  <script type="module">
+    const response = await fetch("https://api.voca.wiki/entry/producer/id?entry=海茶")
+    const id = await response.text()
+    console.log(id)
+    loadProducerWorks(id);
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/alpinejs@3.15.0/dist/cdn.min.js"
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>
