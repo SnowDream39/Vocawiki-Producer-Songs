@@ -75,7 +75,7 @@
     }
 
     .vocaDB-icon {
-        height: 16px;
+        width: 53px;
     }
 
     .icon {
@@ -112,9 +112,14 @@
 @media (prefers-color-scheme: dark) {
     .card {
         text-shadow: black 1px 1px 2px;
+        color: white;
 
         .omote {
             background-color: #000000a0;
+        }
+
+        .bottom {
+            background-color: #888888a0;
         }
     }
 }
