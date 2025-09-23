@@ -127,49 +127,19 @@ function makeStaff(artists) {
 }
 
 /**
- * 去掉不符合标准的条目，并添加一些额外信息
- * @param {Array} songsData
+ *  验证PV是否有效
  */
-function modifySongsData(songsData) {
-  // ========== 根据PV筛选歌曲 ===========
-  songsData.forEach((song) => {
-    // 去掉YouTube自动生成视频
-    song.pvs = song.pvs.filter((pv) => pv.author.slice(-5) != "Topic");
-  });
-  // 去掉没有任何PV的视频
-  songsData = songsData.filter((song) => song.pvs.length > 0);
-
-  // ========== 添加额外信息 ===========
-  // 生成staff列表
-  for (const song of songsData) {
-    song.artistsArray = makeStaff(song.artists);
-    for (const [index, artist] of song.artistsArray.entries()) {
-      if (artist.role === "演唱") {
-        song.vocalists = artist.names;
-        song.artistsArray.splice(index, 1);
-      }
-    }
-  }
-  songsData.forEach((song) => {
-    // 为每个PV添加图标
-    song.pvs.forEach((pv) => {
-      pv.icon = platformIconsMap[pv.service] || "";
-    });
-    // 选出一个最合适的缩略图
-    
-    song.bestThumbnailUrl = song.pvs.filter(
-      (pv) => ["NicoNicoDouga", "Bilibili"].includes(pv.service)
-    )[0]?.thumbUrl;
-  });
-  return songsData;
+function validatePv(pv) {
+  return pv.author.slice(-5) != "Topic" && pv.pvType === "Original";
 }
 
 /**
  * 去掉不符合标准的条目，并添加一些额外信息
- * @param {Array} songsData
+ * 
  */
 function modifySongData(song) {
 
+  // 生成staff列表
   song.artistsArray = makeStaff(song.artists);
   for (const [index, artist] of song.artistsArray.entries()) {
     if (artist.role === "演唱") {
@@ -178,14 +148,18 @@ function modifySongData(song) {
     }
   }
 
+  // 去掉不符合标准的PV
+  song.pvs = song.pvs.filter(validatePv);
+
+  // 添加图标
   song.pvs.forEach((pv) => {
     pv.icon = platformIconsMap[pv.service] || "";
   });
+
   // 选出一个最合适的缩略图
-  
-  song.bestThumbnailUrl = song.pvs.filter(
-    (pv) => ["NicoNicoDouga", "Bilibili"].includes(pv.service)
-  )[0]?.thumbUrl;
+  const servicesOrder = ["Bilibili", "NicoNicoDouga", "Youtube", "SoundCloud"];
+  const bestPv = song.pvs.sort((a, b) => servicesOrder.indexOf(a.service) - servicesOrder.indexOf(b.service))
+  song.bestThumbnailUrl = bestPv[0]?.thumbUrl;
 
   return song;
 }
@@ -222,7 +196,7 @@ function loadProducerWorks(entry) {
 
         const tasks = data.map(item => () => fetchSongData(item.song_id));
         const results = await runWithConcurrency(tasks, 10);
-        let songsData = results.map(songData => modifySongData(songData));
+        let songsData = results.map(songData => modifySongData(songData)).sort((a, b) => new Date(a.publishDate) - new Date(b.publishDate));
 
         render(this, songsData);
       },
