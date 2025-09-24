@@ -189,9 +189,14 @@ function loadProducerWorks(entry) {
           }));
         }
 
-        const artistId = await (await fetch("https://api.voca.wiki/entry/producer/id?entry=" + entry)).text()
+        const isDev = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+        const apiBaseUrl = isDev
+          ? "http://127.0.0.1:8000"
+          : "https://api.voca.wiki";
 
-        response = await fetch("https://api.voca.wiki/entry/producer/song?id=" + artistId)
+        const artistId = await (await fetch(apiBaseUrl + "/producer/id?entry=" + entry)).text()
+
+        response = await fetch(apiBaseUrl + "/producer/song?id=" + artistId)
         const data = await response.json()
 
         const tasks = data.map(item => () => fetchSongData(item.song_id));
